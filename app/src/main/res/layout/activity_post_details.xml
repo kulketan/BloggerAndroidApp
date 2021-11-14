@@ -37,5 +37,27 @@
             android:id="@+id/webView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray0"
+            />
+        <TextView
+            android:id="@+id/labelsTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:text="Labels"
+            android:textColor="@color/gray1"
+            />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/labelsRv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+            app:spanCount="4"
+            tools:listitem="@layout/row_label"
+            />
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

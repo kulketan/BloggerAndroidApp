@@ -4,6 +4,7 @@ import static javax.xml.transform.OutputKeys.ENCODING;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -20,9 +21,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class PostDetailsActivity extends AppCompatActivity {
@@ -30,9 +33,14 @@ public class PostDetailsActivity extends AppCompatActivity {
     //UI Views
     private TextView titleTv,publishInfoTv;
     private WebView webView;
+    private RecyclerView labelsRv;
+
 
     private String postId;
     private static final String TAG = "POST_DETAILS_TAG";
+
+    private ArrayList<ModelLabel> labelArrayList;
+    private AdapterLabel adapterLabel;
 
     //actionbar
     private ActionBar actionBar;
@@ -53,6 +61,8 @@ public class PostDetailsActivity extends AppCompatActivity {
         titleTv = findViewById(R.id.titleTv);
         publishInfoTv = findViewById(R.id.publishInfoTv);
         webView = findViewById(R.id.webView);
+        labelsRv = findViewById(R.id.labelsRv);
+
 
         //get post id from intent
         postId = getIntent().getStringExtra("postId");
@@ -110,8 +120,31 @@ public class PostDetailsActivity extends AppCompatActivity {
                     //content contains web page like html, so load in webview
                     webView.loadDataWithBaseURL(null, content,"text/html",ENCODING,null);
 
+                    //get labels of post
+                    try {
+                        labelArrayList = new ArrayList<>();
+                        labelArrayList.clear();
+
+                        //json array of labels
+                        JSONArray jsonArray = jsonObject.getJSONArray("labels");
+                        for (int i=0; i<jsonArray.length();i++){
+                            String label = jsonArray.getString(i);
+                            //add label in model
+                            ModelLabel modelLabel = new ModelLabel(label);
+
+                            labelArrayList.add(modelLabel);
+                        }
+                        //setup dapter
+                        adapterLabel = new AdapterLabel(PostDetailsActivity.this,labelArrayList);
+                        //set adapter to reclerview
+                        labelsRv.setAdapter(adapterLabel);
 
 
+
+                    }catch (Exception e){
+                        Log.d(TAG, "onResponse: "+e.getMessage());
+
+                    }
                 }catch (Exception e){
                     Log.d(TAG, "onResponse: "+e.getMessage());
                     Toast.makeText(PostDetailsActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
