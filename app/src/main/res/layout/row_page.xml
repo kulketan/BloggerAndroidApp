@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp"
+    android:background="@color/white"
+    android:padding="5dp"
+    >
+    <ImageButton
+        android:id="@+id/moreBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="5dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_next_blac"
+        android:tint="@color/black"
+        tools:ignore="UseAppTint" />
+
+    <!-- page title -->
+    <TextView
+        android:id="@+id/titleTv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_toStartOf="@id/moreBtn"
+        android:text="The Page Title"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        />
+    <!-- publisher info, date, time -->
+    <TextView
+        android:id="@+id/publishInfoTv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/titleTv"
+        android:layout_toStartOf="@id/moreBtn"
+        android:text="By Author 10/11/2021"
+        android:textColor="@color/gray1"
+        />
+
+    <!-- thumbnail of the page -->
+    <ImageView
+        android:id="@+id/imageIv"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_below="@id/publishInfoTv"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:adjustViewBounds="true"
+        android:background="@color/gray1"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_image_black"
+        />
+    <!-- page content/description -->
+    <TextView
+        android:id="@+id/descriptionTv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/publishInfoTv"
+        android:layout_toStartOf="@id/moreBtn"
+        android:layout_toEndOf="@id/imageIv"
+        android:maxLines="4"
+        android:ellipsize="end"
+        android:text="The description of the post, 4 lines only"
+        android:textColor="@color/black"/>
+</RelativeLayout>

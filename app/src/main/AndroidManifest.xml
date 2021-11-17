@@ -13,6 +13,12 @@
         android:theme="@style/Theme.BloggerTest"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".PageDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PagesActivity"
+            android:exported="false" />
+        <activity
             android:name=".PostDetailsActivity"
             android:exported="true" />
         <activity

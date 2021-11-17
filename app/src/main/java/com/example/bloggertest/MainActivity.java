@@ -1,12 +1,17 @@
 package com.example.bloggertest;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -45,11 +50,16 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MAIN_TAG";
 
+    private ActionBar actionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        actionBar = getSupportActionBar();
+        actionBar.setTitle("Blogger");
+        actionBar.setSubtitle("Posts");
 
         postsRv = findViewById(R.id.postsRv);
         loadMoreBtn = findViewById(R.id.loadMoreBtn);
@@ -327,5 +337,23 @@ public class MainActivity extends AppCompatActivity {
         //add request to queue
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //inflate menu
+        getMenuInflater().inflate(R.menu.menu_main,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        //get id of clicked menu item
+        int id = item.getItemId();
+        //handle menu  item clicks
+        if (id == R.id.action_pages){
+            startActivity(new Intent(this,PagesActivity.class));
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
