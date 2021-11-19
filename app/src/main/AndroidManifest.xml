@@ -11,10 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BloggerTest"
-        android:name=".ApplicationClass"
         android:usesCleartextTraffic="true">
-        <!-- Disable opening of links in browser when clicked on notification -->
-        <meta-data android:name="com.onesignal.suppressLaunchURLs" android:value="true"/>
 
         <activity
             android:name=".PageDetailsActivity"
