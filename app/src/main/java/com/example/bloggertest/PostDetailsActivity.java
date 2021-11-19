@@ -134,7 +134,7 @@ public class PostDetailsActivity extends AppCompatActivity {
 
                             labelArrayList.add(modelLabel);
                         }
-                        //setup dapter
+                        //setup adapter
                         adapterLabel = new AdapterLabel(PostDetailsActivity.this,labelArrayList);
                         //set adapter to reclerview
                         labelsRv.setAdapter(adapterLabel);

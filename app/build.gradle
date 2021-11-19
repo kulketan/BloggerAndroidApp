@@ -1,4 +1,5 @@
 plugins {
+    id 'com.onesignal.androidsdk.onesignal-gradle-plugin'
     id 'com.android.application'
     id 'com.google.gms.google-services'
 }
@@ -48,7 +49,7 @@ dependencies {
     implementation 'com.android.volley:volley:1.2.1'
     //https://github.com/square/picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
-
-
+    //Adding onesignal sdk
+    implementation 'com.onesignal:OneSignal:[4.0.0, 4.99.99]'
 
 }
