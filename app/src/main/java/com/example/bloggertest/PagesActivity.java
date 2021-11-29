@@ -47,8 +47,8 @@ public class PagesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_pages);
 
         actionBar = getSupportActionBar();
-        actionBar.setTitle("Yashacha RajMarg");
-        actionBar.setSubtitle("Pages");
+        actionBar.setTitle(Constants.BLOG_NAME);
+        actionBar.setSubtitle(Constants.BLOG_SLOGAN);
         //add back button
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);

@@ -61,11 +61,11 @@ public class AdapterPage extends RecyclerView.Adapter<AdapterPage.HolderPage> {
             Elements elements = document.select("img");
             String image = elements.get(0).attr("src");
             //set the image, if there is any
-            Picasso.get().load(image).placeholder(R.drawable.ic_image_black).into(holder.imageIv);
+            Picasso.get().load(image).placeholder(R.mipmap.ic_launcher).into(holder.imageIv);
 
         }catch (Exception e){
             //if exception occurs due to no image or any other reason set default image
-            holder.imageIv.setImageResource(R.drawable.ic_image_black);
+            holder.imageIv.setImageResource(R.mipmap.ic_launcher);
         }
 
         //format data from GMT to dd/MM/yyyy

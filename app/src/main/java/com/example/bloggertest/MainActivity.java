@@ -1,12 +1,10 @@
 package com.example.bloggertest;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -17,6 +15,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -29,6 +32,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private String url = "";
     private String nextToken = "";
     private boolean isSearch = false;
+    private boolean isFirstResult = false;
 
     private ArrayList<ModelPost> postArrayList;
     private AdapterPost adapterPost;
@@ -58,8 +63,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         actionBar = getSupportActionBar();
-        actionBar.setTitle("Blogger");
-        actionBar.setSubtitle("Posts");
+        actionBar.setTitle(Constants.BLOG_NAME);
+        actionBar.setSubtitle(Constants.BLOG_SLOGAN);
 
         postsRv = findViewById(R.id.postsRv);
         loadMoreBtn = findViewById(R.id.loadMoreBtn);
@@ -68,24 +73,42 @@ public class MainActivity extends AppCompatActivity {
 
         //setup progress dialog
         progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("PLease wait...");
+        progressDialog.setTitle("Please wait...");
 
-        //init & clear list efore adding data into it
+        //init & clear list before adding data into it
         postArrayList = new ArrayList<>();
         postArrayList.clear();
-        
-        loadPosts();
 
+        //we need to check if network connection is available
+        //if available loadposts will be called i.e posts will be fetched by API and then db will be updated as well.
+        //else, posts will be loaded from database.
+
+
+        //loadPosts();
+
+        if(isOnline())
+            loadPosts();
+        else{
+            Toast.makeText(this,"Internet not connected!",Toast.LENGTH_SHORT).show();
+            loadPostsFromRoom();
+        }
         //load more button
 
         loadMoreBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String query = searchEt.getText().toString().trim();
-                if(TextUtils.isEmpty(query))
-                    loadPosts();
-                else
-                    searchPosts(query);
+                if (isOnline()) {
+                    if (TextUtils.isEmpty(query)) {
+                        loadPosts();
+                    }
+                    else {
+                        searchPosts(query);
+                    }
+                }
+                else {
+                    Toast.makeText(MainActivity.this, "Internet not connected!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -100,12 +123,37 @@ public class MainActivity extends AppCompatActivity {
 
 
                 String query = searchEt.getText().toString().trim();
-                if(TextUtils.isEmpty(query))
-                    loadPosts();
-                else
-                    searchPosts(query);
+                if (isOnline()) {
+                    if (TextUtils.isEmpty(query)) {
+                        loadPosts();
+                    }
+                    else {
+                        searchPosts(query);
+                    }
+                }
+                else {
+                    Toast.makeText(MainActivity.this, "Internet not connected!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
+    }
+
+    private void loadPostsFromRoom() {
+        progressDialog.show();
+        ArrayList<ModelPost> localPostArrayList = new ArrayList<>();
+        AppDataBase db = AppDataBase.getDbInstance(this.getApplicationContext());
+        List<ModelPost> modelPostList = db.postDAO().getPosts();
+        localPostArrayList.addAll(modelPostList);
+        if(localPostArrayList.size() >  1 ) {
+            adapterPost = new AdapterPost(MainActivity.this, localPostArrayList);
+            //set adapter to recylerview
+            postsRv.setAdapter(adapterPost);
+        }
+        else
+            Toast.makeText(this, "No Posts to fetch!", Toast.LENGTH_SHORT).show();
+
+        progressDialog.dismiss();
+
     }
 
     private void searchPosts(String query) {
@@ -115,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
         progressDialog.show();
 
         if(nextToken.equals("")){
+
             Log.d(TAG,"searchPosts: Next Page token is empty, no more posts");
             url = "https://www.googleapis.com/blogger/v3/blogs/"
                     + Constants.BLOG_ID
@@ -229,7 +278,9 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "loadPosts: isSearch: "+isSearch);
         progressDialog.show();
 
+        //This will load first time posts.
         if(nextToken.equals("")){
+            isFirstResult = true;
             Log.d(TAG,"loadPosts: Next Page token is empty, no more posts");
             url = "https://www.googleapis.com/blogger/v3/blogs/"
                     + Constants.BLOG_ID
@@ -237,12 +288,14 @@ public class MainActivity extends AppCompatActivity {
                     +"&key="+ Constants.API_KEY;
         }
         else if (nextToken.equals("end")){
+            isFirstResult = false;
             Log.d(TAG,"loadPosts: Next token is empty/end, no more posts");
             Toast.makeText(this,"No More Posts...",Toast.LENGTH_SHORT).show();
             progressDialog.dismiss();
             return;
         }
         else {
+            isFirstResult = false;
             Log.d(TAG,"loadPOsts: next token: " + nextToken);
             url = "https://www.googleapis.com/blogger/v3/blogs/"
                     + Constants.BLOG_ID
@@ -315,6 +368,15 @@ public class MainActivity extends AppCompatActivity {
                     adapterPost = new AdapterPost(MainActivity.this,postArrayList);
                     //set adapter to recylerview
                     postsRv.setAdapter(adapterPost);
+
+                    //adding this to database
+                    if(isFirstResult){
+                        AppDataBase db = AppDataBase.getDbInstance(MainActivity.this.getApplicationContext());
+                        //deleting existing entries from table
+                        db.postDAO().deleteAll();
+                        //inserting new records
+                        db.postDAO().insertPosts(postArrayList);
+                    }
                     progressDialog.dismiss();
 
 
@@ -332,11 +394,14 @@ public class MainActivity extends AppCompatActivity {
                 progressDialog.dismiss();
 
             }
+
         });
+
 
         //add request to queue
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
+
     }
 
     @Override
@@ -356,4 +421,12 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public boolean isOnline() {
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnected());
+    }
+
 }

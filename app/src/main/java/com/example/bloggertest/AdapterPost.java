@@ -66,10 +66,10 @@ public class AdapterPost extends RecyclerView.Adapter<AdapterPost.HolderPost> {
 
             Elements elements = document.select("img");
             String image = elements.get(0).attr("src");
-            Picasso.get().load(image).placeholder(R.drawable.ic_image_black).into(holder.imageIv);
+            Picasso.get().load(image).placeholder(R.mipmap.ic_launcher).into(holder.imageIv);
         }catch (Exception e){
             //exception occured while retriving image, setting to default.
-            holder.imageIv.setImageResource(R.drawable.ic_image_black);
+            holder.imageIv.setImageResource(R.mipmap.ic_launcher);
         }
 
         //format date
@@ -96,6 +96,8 @@ public class AdapterPost extends RecyclerView.Adapter<AdapterPost.HolderPost> {
                 //intent to start activity
                 Intent intent = new Intent(context,PostDetailsActivity.class);
                 intent.putExtra("postId",id);
+                intent.putExtra("url", url);
+                intent.putExtra("title",title);
                 context.startActivity(intent);
             }
         });

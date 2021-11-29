@@ -10,12 +10,19 @@
         <entry key="..\:/Users/ketan/AndroidStudioProjects/BloggerTest/app/src/main/res/layout/activity_post_details.xml" value="0.33" />
         <entry key="..\:/Users/ketan/AndroidStudioProjects/BloggerTest/app/src/main/res/layout/row_label.xml" value="0.3625" />
         <entry key="..\:/Users/ketan/AndroidStudioProjects/BloggerTest/app/src/main/res/layout/row_post.xml" value="0.3625" />
+        <entry key="app/src/main/res/drawable/ic_article_black.xml" value="0.2625" />
+        <entry key="app/src/main/res/drawable/ic_baseline_share_24.xml" value="0.2625" />
+        <entry key="app/src/main/res/drawable/ic_image_black.xml" value="0.2625" />
         <entry key="app/src/main/res/drawable/ic_next_blac.xml" value="0.2546875" />
         <entry key="app/src/main/res/layout/activity_page_details.xml" value="0.10625" />
         <entry key="app/src/main/res/layout/activity_pages.xml" value="0.375" />
         <entry key="app/src/main/res/layout/activity_post_details.xml" value="0.1203125" />
+        <entry key="app/src/main/res/layout/no_internet_layout.xml" value="0.14791666666666667" />
         <entry key="app/src/main/res/layout/row_page.xml" value="0.23854166666666668" />
+        <entry key="app/src/main/res/layout/row_post.xml" value="0.24635416666666668" />
         <entry key="app/src/main/res/menu/menu_main.xml" value="0.23854166666666668" />
+        <entry key="app/src/main/res/menu/post_share_menu.xml" value="0.24635416666666668" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.14114583333333333" />
       </map>
     </option>
   </component>

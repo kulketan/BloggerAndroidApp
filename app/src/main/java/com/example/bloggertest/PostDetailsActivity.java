@@ -2,15 +2,25 @@ package com.example.bloggertest;
 
 import static javax.xml.transform.OutputKeys.ENCODING;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +45,7 @@ public class PostDetailsActivity extends AppCompatActivity {
     private WebView webView;
     private RecyclerView labelsRv;
 
+    private Button retry;
 
     private String postId;
     private static final String TAG = "POST_DETAILS_TAG";
@@ -48,34 +59,50 @@ public class PostDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_post_details);
 
         //init actionbar
         actionBar = getSupportActionBar();
-        actionBar.setTitle("Post Details");
+        actionBar.setTitle(Constants.BLOG_NAME);
+        actionBar.setSubtitle(Constants.BLOG_SLOGAN);
         //add back button
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        //init ui views
-        titleTv = findViewById(R.id.titleTv);
-        publishInfoTv = findViewById(R.id.publishInfoTv);
-        webView = findViewById(R.id.webView);
-        labelsRv = findViewById(R.id.labelsRv);
+        if (isOnline()){
+            setContentView(R.layout.activity_post_details);
+
+            //init ui views
+            titleTv = findViewById(R.id.titleTv);
+            publishInfoTv = findViewById(R.id.publishInfoTv);
+            webView = findViewById(R.id.webView);
+            labelsRv = findViewById(R.id.labelsRv);
 
 
-        //get post id from intent
-        postId = getIntent().getStringExtra("postId");
-        Log.d(TAG,"onCreate: " + postId);
+            //get post id from intent
+            postId = getIntent().getStringExtra("postId");
+            Log.d(TAG, "onCreate: " + postId);
 
-        //setup webview
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setDomStorageEnabled(true);
-        webView.setWebViewClient(new WebViewClient());
-        webView.setWebChromeClient(new WebChromeClient());
+            //setup webview
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.getSettings().setDomStorageEnabled(true);
+            webView.setWebViewClient(new WebViewClient());
+            webView.setWebChromeClient(new WebChromeClient());
 
-        loadPostDetails();
-    }
+            loadPostDetails();
+        }
+        else{
+            setContentView(R.layout.no_internet_layout);
+            retry = findViewById(R.id.retry);
+
+            retry.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                    startActivity(getIntent());
+                }
+            });
+        }
+}
 
     private void loadPostDetails() {
         String url = "https://www.googleapis.com/blogger/v3/blogs/"+ Constants.BLOG_ID
@@ -99,7 +126,7 @@ public class PostDetailsActivity extends AppCompatActivity {
                     String published = jsonObject.getString("published");
                     String content = jsonObject.getString("content");
                     String url = jsonObject.getString("url");
-                    String dislayName = jsonObject.getJSONObject("author").getString("displayName");
+                    String displayName = jsonObject.getJSONObject("author").getString("displayName");
 
                     String gmtDate = published;
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -116,7 +143,7 @@ public class PostDetailsActivity extends AppCompatActivity {
                     //set data
                     actionBar.setSubtitle(title);
                     titleTv.setText(title);
-                    publishInfoTv.setText("By " + dislayName + " " + formattedDate);
+                    publishInfoTv.setText("By " + displayName + " " + formattedDate);
                     //content contains web page like html, so load in webview
                     webView.loadDataWithBaseURL(null, content,"text/html",ENCODING,null);
 
@@ -166,7 +193,55 @@ public class PostDetailsActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        onBackPressed(); //go to previous activity, when back utton of actionbar clicked
+        onBackPressed(); //go to previous activity, when back button of actionbar clicked
         return super.onSupportNavigateUp();
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.post_share_menu, menu);
+
+        // first parameter is the file for icon and second one is menu
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == R.id.share) {
+            Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+
+            // type of the content to be shared
+            sharingIntent.setType("text/plain");
+
+            // Body of the content
+            String shareBody = getIntent().getStringExtra("url");
+            Log.d(TAG, "onOptionsItemSelected: url():" + getIntent().getStringExtra("url"));
+            // subject of the content. you can share anything
+            String shareSubject = getIntent().getStringExtra("title");
+            Log.d(TAG, "onOptionsItemSelected: Title():" + getIntent().getStringExtra("title"));
+
+            // passing body of the content
+            sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+
+            // passing subject of the content
+            sharingIntent.putExtra(Intent.EXTRA_TITLE, shareSubject);
+           // Uri uri = Uri.parse("https://i.ibb.co/jWSxjyH/Whats-App-Image-2021-11-28-at-11-33-44.jpg");
+          //  sharingIntent.setData(uri);
+
+            startActivity(Intent.createChooser(sharingIntent, "Share to"));
+
+        }
+
+        return super.onOptionsItemSelected(item);
+
+    }
+    public boolean isOnline() {
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnected());
     }
 }

@@ -6,11 +6,16 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +40,7 @@ public class PageDetailsActivity extends AppCompatActivity {
     private WebView webView;
     private RecyclerView labelsRv;
 
+    private Button retry;
 
     private String pageId;
     private static final String TAG = "PAGE_DETAILS_TAG";
@@ -48,34 +54,48 @@ public class PageDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_page_details);
 
         //init actionbar
         actionBar = getSupportActionBar();
-        actionBar.setTitle("Yashacha Rajmarg");
-        actionBar.setSubtitle("Page Details");
+        actionBar.setTitle(Constants.BLOG_NAME);
+        actionBar.setSubtitle(Constants.BLOG_SLOGAN);
         //add back button
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        //init ui views
-        titleTv = findViewById(R.id.titleTv);
-        publishInfoTv = findViewById(R.id.publishInfoTv);
-        webView = findViewById(R.id.webView);
-        labelsRv = findViewById(R.id.labelsRv);
+        if(isOnline()) {
+            setContentView(R.layout.activity_page_details);
+            //init ui views
+            titleTv = findViewById(R.id.titleTv);
+            publishInfoTv = findViewById(R.id.publishInfoTv);
+            webView = findViewById(R.id.webView);
+            labelsRv = findViewById(R.id.labelsRv);
 
 
-        //get post id from intent
-        pageId = getIntent().getStringExtra("pageId");
-        Log.d(TAG,"onCreate: " + pageId);
+            //get post id from intent
+            pageId = getIntent().getStringExtra("pageId");
+            Log.d(TAG, "onCreate: " + pageId);
 
-        //setup webview
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setDomStorageEnabled(true);
-        webView.setWebViewClient(new WebViewClient());
-        webView.setWebChromeClient(new WebChromeClient());
+            //setup webview
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.getSettings().setDomStorageEnabled(true);
+            webView.setWebViewClient(new WebViewClient());
+            webView.setWebChromeClient(new WebChromeClient());
 
-        loadPageDetails();
+            loadPageDetails();
+        }
+        else{
+            setContentView(R.layout.no_internet_layout);
+            retry = findViewById(R.id.retry);
+
+            retry.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                    startActivity(getIntent());
+                }
+            });
+        }
     }
 
     private void loadPageDetails() {
@@ -169,5 +189,12 @@ public class PageDetailsActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         onBackPressed(); //go to previous activity, when back utton of actionbar clicked
         return super.onSupportNavigateUp();
+    }
+
+    public boolean isOnline() {
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnected());
     }
 }

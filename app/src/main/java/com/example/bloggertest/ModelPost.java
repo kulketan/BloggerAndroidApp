@@ -1,9 +1,30 @@
 package com.example.bloggertest;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity
 public class ModelPost {
 
     //variables
-    String authorName, content, id, published, selfLink, title, updated, url;
+    @ColumnInfo(name = "authorName")
+    String authorName;
+    @ColumnInfo(name = "content")
+    String content;
+    @PrimaryKey(autoGenerate = false)
+    @NonNull String id;
+    @ColumnInfo(name = "published")
+    String published;
+    @ColumnInfo(name = "selfLink")
+    String selfLink;
+    @ColumnInfo(name = "title")
+    String title;
+    @ColumnInfo(name = "updated")
+    String updated;
+    @ColumnInfo(name = "url")
+    String url;
 
     //constructor
 

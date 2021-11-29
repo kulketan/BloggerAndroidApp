@@ -53,7 +53,7 @@
         android:adjustViewBounds="true"
         android:background="@color/gray1"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_image_black"
+        android:src="@mipmap/ic_launcher"
         />
     <!-- page content/description -->
     <TextView
