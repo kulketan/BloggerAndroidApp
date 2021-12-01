@@ -8,7 +8,7 @@
         android:gravity="center">
         <bitmap
             android:gravity="fill"
-            android:src="@drawable/splash_screen_logo"
+            android:src="@drawable/yashacha_rajmarg_logo_removedbg"
             />
     </item>
 </layer-list>
