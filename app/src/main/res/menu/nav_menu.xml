@@ -69,10 +69,6 @@
                     android:id="@+id/item8"
                     android:icon="@drawable/ic_baseline_email_24"
                     android:title="yashacharajmarg@gmail.com" />
-                <item
-                    android:id="@+id/item9"
-                    android:icon="@drawable/ic_telegram_icon"
-                    android:title="Telegram" />
             </menu>
         </item>
     </group>

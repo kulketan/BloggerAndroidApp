@@ -155,9 +155,6 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.item8:
                         intent = new Intent(Intent.ACTION_VIEW, Uri.parse("mailto:" + "yashacharajmarg@gmail.com"));
                         break;
-                    case R.id.item9:
-                        intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/+917798653068"));
-                        break;
                 }
                 startActivity(intent);
                 return true;
