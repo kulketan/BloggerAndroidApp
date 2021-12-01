@@ -7,6 +7,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -52,6 +53,7 @@ public class PostDetailsActivity extends AppCompatActivity {
 
     private ArrayList<ModelLabel> labelArrayList;
     private AdapterLabel adapterLabel;
+    private ProgressDialog progressDialog;
 
     //actionbar
     private ActionBar actionBar;
@@ -67,6 +69,10 @@ public class PostDetailsActivity extends AppCompatActivity {
         //add back button
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
+
+        //setting progress dialogue
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Please wait...");
 
         if (isOnline()){
             setContentView(R.layout.activity_post_details);
@@ -91,10 +97,12 @@ public class PostDetailsActivity extends AppCompatActivity {
             loadPostDetails();
         }
         else{
+            progressDialog.show();
             setContentView(R.layout.no_internet_layout);
             retry = findViewById(R.id.retry);
-
+            progressDialog.dismiss();
             retry.setOnClickListener(new View.OnClickListener() {
+
                 @Override
                 public void onClick(View v) {
                     finish();
@@ -105,6 +113,8 @@ public class PostDetailsActivity extends AppCompatActivity {
 }
 
     private void loadPostDetails() {
+        progressDialog.show();
+
         String url = "https://www.googleapis.com/blogger/v3/blogs/"+ Constants.BLOG_ID
                 +"/posts/"+postId
                 +"?key=" + Constants.API_KEY;
@@ -165,16 +175,20 @@ public class PostDetailsActivity extends AppCompatActivity {
                         adapterLabel = new AdapterLabel(PostDetailsActivity.this,labelArrayList);
                         //set adapter to reclerview
                         labelsRv.setAdapter(adapterLabel);
+                        progressDialog.dismiss();
 
 
 
                     }catch (Exception e){
                         Log.d(TAG, "onResponse: "+e.getMessage());
+                        progressDialog.dismiss();
 
                     }
                 }catch (Exception e){
                     Log.d(TAG, "onResponse: "+e.getMessage());
                     Toast.makeText(PostDetailsActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
+
                 }
 
             }
@@ -183,12 +197,16 @@ public class PostDetailsActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                     //failed to retrive post show error
                 Toast.makeText(PostDetailsActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+
             }
         });
 
         //add request to queue
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
+
+
     }
 
     @Override
@@ -222,17 +240,12 @@ public class PostDetailsActivity extends AppCompatActivity {
             // subject of the content. you can share anything
             String shareSubject = getIntent().getStringExtra("title");
             Log.d(TAG, "onOptionsItemSelected: Title():" + getIntent().getStringExtra("title"));
-
             // passing body of the content
-            sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
-
+            sharingIntent.putExtra(Intent.EXTRA_TEXT,shareSubject +"\n\n" + shareBody);
             // passing subject of the content
             sharingIntent.putExtra(Intent.EXTRA_TITLE, shareSubject);
-           // Uri uri = Uri.parse("https://i.ibb.co/jWSxjyH/Whats-App-Image-2021-11-28-at-11-33-44.jpg");
-          //  sharingIntent.setData(uri);
 
-            startActivity(Intent.createChooser(sharingIntent, "Share to"));
-
+            startActivity(Intent.createChooser(sharingIntent, null));
         }
 
         return super.onOptionsItemSelected(item);

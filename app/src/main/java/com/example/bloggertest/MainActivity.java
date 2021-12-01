@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -18,7 +19,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
@@ -27,6 +31,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.navigation.NavigationView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -56,6 +61,10 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MAIN_TAG";
 
     private ActionBar actionBar;
+    private NavigationView navigationView;
+
+    public DrawerLayout drawerLayout;
+    public ActionBarDrawerToggle actionBarDrawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +79,98 @@ public class MainActivity extends AppCompatActivity {
         loadMoreBtn = findViewById(R.id.loadMoreBtn);
         searchEt = findViewById(R.id.searchEt);
         searchBtn = findViewById(R.id.searchBtn);
+
+        // drawer layout instance to toggle the menu icon to open
+        // drawer and back button to close drawer
+        drawerLayout = findViewById(R.id.my_drawer_layout);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close);
+        navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int id = item.getItemId();
+                Log.d(TAG, "onOptionsItemSelected nav: id" + id);
+                Intent intent = new Intent(MainActivity.this,PostByLabelActivity.class);
+
+                //handle menu  item clicks
+                   // startActivity(new Intent(MainActivity.this,ContactActivity.class));
+                switch (id) {
+                    case R.id.label1:
+                        intent.putExtra("label", "CSAT");
+                        break;
+
+                    case R.id.label2:
+                        intent.putExtra("label", "Current Affairs");
+                        break;
+
+                    case R.id.label3:
+                        intent.putExtra("label", "Economics");
+                        break;
+
+                    case R.id.label4:
+                        intent.putExtra("label", "English Grammar");
+                        break;
+
+                    case R.id.label5:
+                        intent.putExtra("label", "Geography");
+                        break;
+
+                    case R.id.label6:
+                        intent.putExtra("label", "History");
+                        break;
+
+                    case R.id.label7:
+                        intent.putExtra("label", "Indian Polity");
+                        break;
+
+                    case R.id.label8:
+                        intent.putExtra("label", "mpsc");
+                        break;
+
+                    case R.id.label9:
+                        intent.putExtra("label", "Science");
+                        break;
+
+                    case R.id.label10:
+                        intent.putExtra("label", "upsc");
+                        break;
+
+                    case R.id.label11:
+                        intent.putExtra("label", "पोलीस भरती");
+                        break;
+
+                    case R.id.label12:
+                        intent.putExtra("label", "मराठी व्याकरण");
+                        break;
+
+                    case R.id.label13:
+                        intent.putExtra("label", "समाजसुधारक");
+                        break;
+                    case R.id.item6:
+                        intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/917798653068"));
+                        break;
+                    case R.id.item7:
+                        intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:+917798653068"));
+                        break;
+                    case R.id.item8:
+                        intent = new Intent(Intent.ACTION_VIEW, Uri.parse("mailto:" + "yashacharajmarg@gmail.com"));
+                        break;
+                    case R.id.item9:
+                        intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/+917798653068"));
+                        break;
+                }
+                startActivity(intent);
+                return true;
+            }
+        });
+
+        // pass the Open and Close toggle for the drawer layout listener
+        // to toggle the button
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
+
+        // to make the Navigation drawer icon always appear on the action bar
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //setup progress dialog
         progressDialog = new ProgressDialog(this);
@@ -405,6 +506,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
+            drawerLayout.closeDrawer(GravityCompat.START);
+        }
+        else
+            super.onBackPressed();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         //inflate menu
         getMenuInflater().inflate(R.menu.menu_main,menu);
@@ -415,9 +525,17 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         //get id of clicked menu item
         int id = item.getItemId();
+        Log.d(TAG, "onOptionsItemSelected: id" + id);
         //handle menu  item clicks
         if (id == R.id.action_pages){
             startActivity(new Intent(this,PagesActivity.class));
+        }
+        if(id == R.id.nav_contact){
+            startActivity(new Intent(this,ContactActivity.class));
+        }
+        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
+            Log.d(TAG, "onOptionsItemSelected: item" + item.toString());
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="HardcodedText">
+
+    <group
+        android:id="@+id/group2"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/subtitle"
+            android:title="Labels">
+            <menu>
+                <item
+                    android:id="@+id/label1"
+                    android:title="CSAT" />
+                <item
+                    android:id="@+id/label2"
+                    android:title="Current Affairs" />
+                <item
+                    android:id="@+id/label3"
+                    android:title="Economics" />
+                <item
+                    android:id="@+id/label4"
+                    android:title="English Grammar" />
+                <item
+                    android:id="@+id/label5"
+                    android:title="Geography" />
+                <item
+                    android:id="@+id/label6"
+                    android:title="History" />
+                <item
+                    android:id="@+id/label7"
+                    android:title="Indian Polity" />
+                <item
+                    android:id="@+id/label8"
+                    android:title="mpsc" />
+                <item
+                    android:id="@+id/label9"
+                    android:title="Science" />
+                <item
+                    android:id="@+id/label10"
+                    android:title="upsc" />
+                <item
+                    android:id="@+id/label11"
+                    android:title="पोलीस भरती" />
+                <item
+                    android:id="@+id/label12"
+                    android:title="मराठी व्याकरण" />
+                <item
+                    android:id="@+id/label13"
+                    android:title="समाजसुधारक" />
+            </menu>
+        </item>
+    </group>
+    <group>
+        <item
+            android:id="@+id/nav_contact"
+            android:title="Contact Us" >
+            <menu>
+                <item
+                    android:id="@+id/item6"
+                    android:icon="@drawable/ic_whatsapp_icon"
+                    android:title="+91 7798653068" />
+                <item
+                    android:id="@+id/item7"
+                    android:icon="@drawable/ic_baseline_phone_in_talk_24"
+                    android:title="+917798653068" />
+                <item
+                    android:id="@+id/item8"
+                    android:icon="@drawable/ic_baseline_email_24"
+                    android:title="yashacharajmarg@gmail.com" />
+                <item
+                    android:id="@+id/item9"
+                    android:icon="@drawable/ic_telegram_icon"
+                    android:title="Telegram" />
+            </menu>
+        </item>
+    </group>
+
+</menu>

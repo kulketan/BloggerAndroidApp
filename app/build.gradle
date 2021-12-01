@@ -26,6 +26,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    buildFeatures {
+        viewBinding true
+    }
     //enabling databinding
 //    dataBinding{
 //        enabled = true;
@@ -38,6 +41,8 @@ dependencies {
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
     implementation 'com.google.firebase:firebase-messaging:20.1.0'
+    implementation 'androidx.navigation:navigation-fragment:2.3.5'
+    implementation 'androidx.navigation:navigation-ui:2.3.5'
     // Required -- JUnit 4 framework
     testImplementation 'junit:junit:4.13.2'
     // Optional -- Robolectric environment
@@ -59,6 +64,10 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
 
+    // adding lottie dependency for offline animation
     implementation "com.airbnb.android:lottie:4.2.2"
+
+    //adding material dependency for nav
+    implementation 'com.google.android.material:material:1.4.0'
 
 }

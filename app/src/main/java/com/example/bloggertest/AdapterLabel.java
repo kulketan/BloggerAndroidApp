@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class AdapterLabel  extends RecyclerView.Adapter<AdapterLabel.HolderLable>{
+public class AdapterLabel extends RecyclerView.Adapter<AdapterLabel.HolderLabel>{
 
     private Context context;
     private ArrayList<ModelLabel> labelArrayList;
@@ -23,14 +23,14 @@ public class AdapterLabel  extends RecyclerView.Adapter<AdapterLabel.HolderLable
 
     @NonNull
     @Override
-    public HolderLable onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public HolderLabel onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         //inflate layout row_label.xml
         View view = LayoutInflater.from(context).inflate(R.layout.row_label,parent,false);
-        return new HolderLable(view);
+        return new HolderLabel(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull HolderLable holder, int position) {
+    public void onBindViewHolder(@NonNull HolderLabel holder, int position) {
 
         ModelLabel modelLabel = labelArrayList.get(position);
         String label = modelLabel.getLabel();
@@ -45,12 +45,12 @@ public class AdapterLabel  extends RecyclerView.Adapter<AdapterLabel.HolderLable
 
 
     /*viewhold class that will hold row_label.xml */
-    class HolderLable extends RecyclerView.ViewHolder{
+    class HolderLabel extends RecyclerView.ViewHolder{
 
         //ui views for row_label.xml
         private TextView labelTv;
 
-        public HolderLable(@NonNull View itemView) {
+        public HolderLabel(@NonNull View itemView) {
             super(itemView);
 
             labelTv = itemView.findViewById(R.id.labelTv);

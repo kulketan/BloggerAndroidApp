@@ -6,6 +6,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -47,6 +48,8 @@ public class PageDetailsActivity extends AppCompatActivity {
 
     private ArrayList<ModelLabel> labelArrayList;
     private AdapterLabel adapterLabel;
+    private ProgressDialog progressDialog;
+
 
     //actionbar
     private ActionBar actionBar;
@@ -63,7 +66,14 @@ public class PageDetailsActivity extends AppCompatActivity {
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+
+        //setup progress dialog
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Please wait...");
+
         if(isOnline()) {
+
+
             setContentView(R.layout.activity_page_details);
             //init ui views
             titleTv = findViewById(R.id.titleTv);
@@ -85,9 +95,10 @@ public class PageDetailsActivity extends AppCompatActivity {
             loadPageDetails();
         }
         else{
+            progressDialog.show();
             setContentView(R.layout.no_internet_layout);
             retry = findViewById(R.id.retry);
-
+            progressDialog.dismiss();
             retry.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -99,6 +110,8 @@ public class PageDetailsActivity extends AppCompatActivity {
     }
 
     private void loadPageDetails() {
+        progressDialog.show();
+
         String url = "https://www.googleapis.com/blogger/v3/blogs/"+ Constants.BLOG_ID
                 +"/pages/"+pageId
                 +"?key=" + Constants.API_KEY;
@@ -160,15 +173,20 @@ public class PageDetailsActivity extends AppCompatActivity {
                         //set adapter to reclerview
                         labelsRv.setAdapter(adapterLabel);
 
+                        progressDialog.dismiss();
 
 
                     }catch (Exception e){
                         Log.d(TAG, "onResponse: "+e.getMessage());
+                        progressDialog.dismiss();
+
 
                     }
                 }catch (Exception e){
                     Log.d(TAG, "onResponse: "+e.getMessage());
                     Toast.makeText(PageDetailsActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
+
                 }
 
             }
@@ -177,6 +195,8 @@ public class PageDetailsActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 //failed to retrive post show error
                 Toast.makeText(PageDetailsActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+
             }
         });
 
